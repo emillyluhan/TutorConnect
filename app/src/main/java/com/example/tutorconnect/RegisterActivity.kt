@@ -2,196 +2,69 @@ package com.example.tutorconnect
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import com.example.tutorconnect.ui.theme.TutorConnectTheme
+import android.util.Patterns
+import android.view.animation.AnimationUtils
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 
-@OptIn(ExperimentalMaterial3Api::class)
-class RegisterActivity : ComponentActivity() {
+class RegisterActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            TutorConnectTheme {
-                PantallaDeRegistro()
-            }
-        }
-    }
-}
+        setContentView(R.layout.activity_register)
 
-@Composable
-fun PantallaDeRegistro() {
-    val context = LocalContext.current
-    var nombre by remember { mutableStateOf("") }
-    var correo by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
-    var contraseña by remember { mutableStateOf("") }
-    var esTutor by remember { mutableStateOf(false) }
+        // Referencias a los views
+        val etName = findViewById<EditText>(R.id.etName)
+        val etEmail = findViewById<EditText>(R.id.etEmail)
+        val etPhone = findViewById<EditText>(R.id.etPhone)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
+        val switchTutor = findViewById<Switch>(R.id.switchTutor)
+        val btnRegister = findViewById<Button>(R.id.btnRegister)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        contentAlignment = Alignment.Center
-    ) {
-        // Fondo
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = "Fondo de la pantalla de registro",
-            modifier = Modifier.fillMaxSize()
-        )
+        // Animación opcional para el botón
+        val bounceAnim = AnimationUtils.loadAnimation(this, R.anim.bounce)
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(8.dp))
+        btnRegister.setOnClickListener {
+            btnRegister.startAnimation(bounceAnim) // animación rebote
 
-            // Título "Crear cuenta"
-            Text(
-                text = "Crear cuenta",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
+            val nombre = etName.text.toString().trim()
+            val correo = etEmail.text.toString().trim()
+            val telefono = etPhone.text.toString().trim()
+            val contraseña = etPassword.text.toString()
+            val esTutor = switchTutor.isChecked
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Campo Nombre
-            OutlinedTextField(
-                value = nombre,
-                onValueChange = { nombre = it },
-                label = { Text("Nombre completo") },
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_user),
-                        contentDescription = "Icono usuario",
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campo Correo
-            OutlinedTextField(
-                value = correo,
-                onValueChange = { correo = it },
-                label = { Text("Correo electrónico") },
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_email),
-                        contentDescription = "Icono correo",
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campo Teléfono
-            OutlinedTextField(
-                value = telefono,
-                onValueChange = { telefono = it },
-                label = { Text("Teléfono") },
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_phone),
-                        contentDescription = "Icono teléfono",
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campo Contraseña
-            OutlinedTextField(
-                value = contraseña,
-                onValueChange = { contraseña = it },
-                label = { Text("Contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_lock),
-                        contentDescription = "Icono candado",
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Casilla "Registrarse como Tutor"
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Checkbox(
-                    checked = esTutor,
-                    onCheckedChange = { esTutor = it }
-                )
-                Text(text = "Registrarse como Tutor", fontSize = 16.sp)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botón de registro
-            Button(
-                onClick = { /* Acción de registro */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6A1B9A))
-            ) {
-                Text("Registrarse", color = Color.White)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Opción de iniciar sesión con navegación a MainActivity
-            Text(
-                text = "¿Ya tienes cuenta? Inicia sesión",
-                color = Color(0xFF6A1B9A),
-                fontSize = 14.sp,
-                modifier = Modifier.clickable {
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)
+            // Validaciones básicas
+            when {
+                nombre.isEmpty() -> {
+                    etName.error = "Nombre requerido"
+                    etName.requestFocus()
+                    return@setOnClickListener
                 }
-            )
+                correo.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(correo).matches() -> {
+                    etEmail.error = "Correo inválido"
+                    etEmail.requestFocus()
+                    return@setOnClickListener
+                }
+                telefono.isEmpty() || telefono.length < 8 -> {
+                    etPhone.error = "Teléfono inválido"
+                    etPhone.requestFocus()
+                    return@setOnClickListener
+                }
+                contraseña.isEmpty() || contraseña.length < 6 -> {
+                    etPassword.error = "La contraseña debe tener al menos 6 caracteres"
+                    etPassword.requestFocus()
+                    return@setOnClickListener
+                }
+                else -> {
+                    Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
+
+                    // Ir a la pantalla de inicio de sesión
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun VistaPreviaRegistro() {
-    TutorConnectTheme {
-        PantallaDeRegistro()
-    }
-}
+
